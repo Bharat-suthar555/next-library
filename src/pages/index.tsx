@@ -1,36 +1,40 @@
-// import Image from "next/image";
 // import { useEffect, useState } from "react";
-
 // export default function Home() {
-//   const [data, fetchdata] = useState<any[]>([]);
+//   const [userData, setUserData] = useState<any[]>([]);
+
 //   useEffect(() => {
-//     fetch("localhost:3500/Publisher").then((res) => res.json().then(fetchdata));
+//     fetch("http://localhost:3500/books")
+//       .then((res) => res.json())
+//       .then((data) => setUserData(data));
 //   }, []);
-//   // eslint-disable-next-line react/jsx-key
-//   return <h1>{data.map((bharat)=>(<div>{bharat.id}</div>))}</h1>;
+
+//   console.log({ userData });
+//   return (
+
+//     <table border="1" cellpadding="50" id="printTable">
+//       {userData.map((user) => (
+//         <tr key={user.id}>
+//           <td>{user.id}</td>
+//           <td>{user.books_status}</td>
+//           <td>{user.books_price}</td>
+//           <td>{user.vendor_code}</td>
+//           <td>{user.library_name}</td>
+//           <td>{user.publisherId}</td>
+//         </tr>
+//       ))}
+//     </table>
+//   );
 // }
 
-import { useEffect, useState } from "react";
-
+import Navbar from "../components/Nav"
+import styles from "../styles/home.module.css";
 export default function Home() {
-  const [userData, setUserData] = useState<any[]>([]);
-
-  useEffect(() => {
-    fetch("http://localhost:3500/Publisher")
-      .then((res) => res.json())
-      .then((data) => setUserData(data));
-  }, []);
-
-  console.log({ userData });
   return (
-    <table>
-      {userData.map((user) => (
-        <tr key={user.id}>
-          <td>{user.id}</td>
-          <td>{user.publisher_name}</td>
-          <td>{user.publisher_country}</td>
-        </tr>
-      ))}
-    </table>
-  );
+    <>
+      <Navbar />
+      <div>
+      <h1 className={styles.heading}>Home Page</h1>
+      </div>
+    </>
+  )
 }
