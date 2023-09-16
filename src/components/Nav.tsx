@@ -1,4 +1,5 @@
 
+import Link from "next/link";
 import styles from "../styles/home.module.css"
 
 type user = {
@@ -15,10 +16,10 @@ const Navbar = () => {
   return <>
     <nav>
       <ul className={styles.menubar}>
-        <li><a href="/home">Home</a></li>
-        <li><a href="/books">Books</a></li>
-        <li><a href="/author">Authors</a></li>
-        <li><a href="/contact">Contact</a></li>
+        <li><Link href="/home">Home</Link></li>
+        <li><Link href="/books">Books</Link></li>
+        <li><Link href="/author">Publisher</Link></li>
+        <li><Link href="/contact">Contact</Link></li>
       </ul>
     </nav>
   </>
