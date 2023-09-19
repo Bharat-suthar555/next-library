@@ -1,28 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import styles from "../styles/home.module.css";
 import Navbar from "@/components/Nav";
 
 type User = {
   id: number;
-  publisher_code: string;
-  publisher_name: string;
-  publisher_country: string;
+  title: string;
+  stationary: string;
+  price: string;
+  image:String;
 };
 
 export default function Publisher() {
   const [userData, setUserData] = useState<User[]>([]);
-  const [code, setCode] = useState("");
-  const [name, setName] = useState("");
-  const [country, setCountry] = useState("");
+  const [title, settitle] = useState("");
+  const [stationary, setstationary] = useState("");
+  const [price, setprice] = useState("");
+  const [image, setimage] = useState("");
   const [Pid, setPid] = useState("");
   const [formError, setFormError] = useState(""); // To store and display form validation errors
 
   useEffect(() => {
-    fetchPublisherData();
+    bookData();
   }, []);
 
-  const fetchPublisherData = () => {
-    const apiUrl = "http://localhost:3500/Publisher";
+  const bookData = () => {
+    const apiUrl = "http://localhost:3500/book_data";
     fetch(apiUrl)
       .then((response) => {
         if (!response.ok) {
@@ -31,6 +33,7 @@ export default function Publisher() {
         return response.json();
       })
       .then((data) => {
+        console.log({data})
         setUserData(data);
       })
       .catch((error) => {
@@ -40,16 +43,16 @@ export default function Publisher() {
 
   const handleSubmit = () => {
     // Check if required fields are empty
-    if (!code || !name || !country) {
+    if (!title || !stationary || !price) {
       setFormError("All fields are required"); // Set an error message
       return;
     }
 
-    const apiUrl = "http://localhost:3500/createPublisher";
+    const apiUrl = "http://localhost:3500/createdata";
     const postData = {
-      publisher_code: code,
-      publisher_name: name,
-      publisher_country: country,
+      title: title,
+      stationary: stationary,
+      price: price,
     };
     fetch(apiUrl, {
       method: "POST",
@@ -62,15 +65,12 @@ export default function Publisher() {
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
-        setCode("");
-        setName("");
-        setCountry("");
-        setFormError(""); // Clear the error message
-        fetchPublisherData();
+     console.log({response})
       })
       .catch((error) => {
         console.error("Error posting data:", error);
       });
+      window.location.reload();
   };
 
   const handleDelete = () => {
@@ -80,7 +80,7 @@ export default function Publisher() {
       return;
     }
 
-    const delUrl = `http://localhost:3500/Publisher/${Pid}`;
+    const delUrl = `http://localhost:3500/book_data/${Pid}`;
     fetch(delUrl, {
       method: "DELETE",
       headers: {
@@ -93,7 +93,7 @@ export default function Publisher() {
         }
         setPid("");
         setFormError(""); // Clear the error message
-        fetchPublisherData();
+        bookData();
       })
       .catch((error) => {
         console.error("Error deleting data:", error);
@@ -105,67 +105,102 @@ export default function Publisher() {
     <div>
       <Navbar />
       {/* Display publisher data here */}
-      <h1 className={styles.heading}>-----------Publisher----------</h1>
-            <table className={styles.table}>
-                <thead>
-                    <tr className={styles.tableline}>
-                        <th className={styles.tableHeader}>ID</th>
-                        <th className={styles.tableHeader}>Publisher Code</th>
-                        <th className={styles.tableHeader}>Publisher Name</th>
-                        <th className={styles.tableHeader}>Country</th>
-                    </tr>
-
-                </thead>
-                <tbody>
-                    {userData.map((user) => (
-                        <tr key={user.id}>
-                            <td>{user.id}</td>
-                            <td>{user.publisher_code}</td>
-                            <td>{user.publisher_name}</td>
-                            <td>{user.publisher_country}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-
-
-      {/* Add new publisher data form */}
-      <h1 className={styles.heading}>------Publish Your Book Here------</h1>
-      <div className={styles.error}>{formError}</div> {/* Display the error message */}
+      <h1 className={styles.heading}>-----------Publish Your Book----------</h1>
       <table className={styles.table}>
         <thead>
           <tr className={styles.tableline}>
-            <th className={styles.tableHeader}>Publisher Code</th>
-            <th className={styles.tableHeader}>Publisher Name</th>
-            <th className={styles.tableHeader}>Country</th>
+            <th className={styles.tableHeader}>ID</th>
+            <th className={styles.tableHeader}>Title</th>
+            <th className={styles.tableHeader}>Stationary</th>
+            <th className={styles.tableHeader}>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          {userData.map((user) => (
+            <tr key={user.id}>
+              <td>{user.id}</td>
+              <td>{user.title}</td>
+              <td>{user.stationary}</td>
+              <td>{user.price}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {/* Add new Book data*/}
+      <h1 className={styles.heading}>------Publish Your Book Here------</h1>
+      <div className={styles.error}>{formError}</div>{" "}
+      {/* Display the error message */}
+      <table className={styles.table}>
+        <thead>
+          <tr className={styles.tableline}>
+            <th className={styles.tableHeader}>Title</th>
+            <th className={styles.tableHeader}>Stationary</th>
+            <th className={styles.tableHeader}>Price</th>
+            <th className={styles.tableHeader}>Image</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><input value={code} onChange={(e) => setCode(e.target.value)} type="text" /></td>
-            <td><input value={name} onChange={(e) => setName(e.target.value)} type="text" /></td>
-            <td><input value={country} onChange={(e) => setCountry(e.target.value)} type="text" /></td>
+            <td>
+              <input className="inputtext"
+                value={title}
+                onChange={(e) => settitle(e.target.value)}
+                type="text"
+              />
+            </td>
+            <td>
+              <input className="inputtext"
+                value={stationary}
+                onChange={(e) => setstationary(e.target.value)}
+                type="text"
+              />
+            </td>
+            <td>
+              <input className="inputtext"
+                value={price}
+                onChange={(e) => setprice(e.target.value)}
+                type="text"
+              />
+            </td>
+            <td>
+              
+              <input className="inputtext"
+                value={image}
+                onChange={(e) => setimage(e.target.value)}
+                type="text"
+              />
+            </td>
           </tr>
         </tbody>
       </table>
-      <button type="submit" onClick={handleSubmit} className={styles.center}>Submit</button>
-
+      <button type="submit" onClick={handleSubmit} className={styles.center}>
+        Submit
+      </button>
       {/* Delete Data Form */}
       <h1 className={styles.heading}>-----Delete From Here-----</h1>
-      <div className={styles.error}>{formError}</div> {/* Display the error message */}
+      <div className={styles.error}>{formError}</div>{" "}
+      {/* Display the error message */}
       <table className={styles.table}>
         <thead>
           <tr className={styles.tableline}>
-            <th className={styles.tableHeader}>Publisher Code</th>
+            <th className={styles.tableHeader}>Book Id</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><input value={Pid} onChange={(e) => setPid(e.target.value)} type="text" /></td>
+            <td>
+              <input
+                value={Pid}
+                onChange={(e) => setPid(e.target.value)}
+                type="text"
+              />
+            </td>
           </tr>
         </tbody>
       </table>
-      <button type="submit" onClick={handleDelete} className={styles.center}>Delete</button>
+      <button type="submit" onClick={handleDelete} className={styles.center}>
+        Delete
+      </button>
     </div>
   );
 }
